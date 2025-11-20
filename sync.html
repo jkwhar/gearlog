@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>carLog Sync</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Sync</h1>
+      <p class="tagline">History and server view</p>
+    </div>
+    <div class="header-actions">
+      <nav class="nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="sync.html">Sync</a>
+      </nav>
+      <button id="sync-button" class="primary">Queue Sync</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Sync Actions</h2>
+      <div class="actions">
+        <button id="refresh-server-data">Refresh Server Data</button>
+        <button id="export-button">Export JSON</button>
+        <label class="file-input">Import JSON <input type="file" id="import-input" accept="application/json" /></label>
+      </div>
+      <p class="muted">Uses API Base URL from Settings. Queue Sync posts local changes and pulls server data.</p>
+    </section>
+
+    <section class="card">
+      <h2>Sync History</h2>
+      <ul id="sync-history" class="list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Server Data</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Vehicles</h3>
+          <ul id="server-vehicles" class="list"></ul>
+        </div>
+        <div>
+          <h3>Service Records</h3>
+          <ul id="server-services" class="list"></ul>
+          <h3 style="margin-top:1rem;">Mileage Readings</h3>
+          <ul id="server-mileage" class="list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-meta">
+      <span id="status-text">Ready (offline-first)</span>
+      <span id="last-sync-text" class="muted"></span>
+    </div>
+  </footer>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

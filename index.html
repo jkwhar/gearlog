@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>carLog</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>carLog</h1>
+      <p class="tagline">Offline-first car maintenance tracker (PoC)</p>
+    </div>
+    <div class="header-actions">
+      <nav class="nav-links">
+        <a href="settings.html">Settings</a>
+        <a href="sync.html">Sync</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Vehicles</h2>
+      <p class="muted">Add vehicles in Settings, then manage services here.</p>
+      <div id="vehicle-list" class="list"></div>
+    </section>
+
+    <section class="card">
+      <h2>Add Service Record</h2>
+      <form id="service-form" class="form-grid">
+        <label>Vehicle <select name="vehicleId" required></select></label>
+        <label>Date <input name="date" type="date" required /></label>
+        <label>Mileage <input name="mileage" type="number" min="0" step="1" required /></label>
+        <label>Description <input name="description" required /></label>
+        <label>Parts/Notes <textarea name="notes" rows="2"></textarea></label>
+        <label>Cost (USD) <input name="cost" type="number" min="0" step="0.01" /></label>
+        <button type="submit" class="primary">Save Service</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Quick Tips</h2>
+      <ul class="muted">
+        <li>Visit <a href="settings.html">Settings</a> to add vehicles or import/export data.</li>
+        <li>Use Queue Sync when connectivity returns; local data stays cached.</li>
+      </ul>
+    </section>
+  </main>
+
+  <dialog id="vehicle-dialog">
+    <div class="dialog-content">
+      <h3 id="vehicle-dialog-title"></h3>
+      <div id="vehicle-dialog-body"></div>
+      <button id="close-dialog" class="primary">Close</button>
+    </div>
+  </dialog>
+
+  <footer class="app-footer">
+    <div class="footer-meta">
+      <span id="status-text">Ready (offline-first)</span>
+      <span id="last-sync-text" class="muted"></span>
+    </div>
+  </footer>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

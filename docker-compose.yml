@@ -1,0 +1,12 @@
+services:
+  carlog-api:
+    build: ./api
+    environment:
+      - PORT=5000
+      # Set AUTH_TOKEN to require a bearer token from the PWA (leave empty to disable).
+      # - AUTH_TOKEN=yourSecret
+    volumes:
+      - ./api/data:/app/data
+    ports:
+      - "5000:5000"
+    restart: unless-stopped

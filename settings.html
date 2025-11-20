@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>carLog Settings</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Settings</h1>
+      <p class="tagline">Manage vehicles and data</p>
+    </div>
+    <div class="header-actions">
+      <nav class="nav-links">
+        <a href="index.html">Dashboard</a>
+      </nav>
+      <button id="sync-button" class="primary">Queue Sync</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Sync Settings</h2>
+      <form id="sync-settings-form" class="form-grid">
+        <label>API Base URL <input id="api-base" name="apiBase" placeholder="http://192.168.x.x:5000" required /></label>
+        <label>API Token (optional) <input id="api-token" name="apiToken" placeholder="Bearer token if set" /></label>
+        <button type="submit" class="primary">Save Connection</button>
+      </form>
+      <p class="muted">Use your Unraid host IP/base path (same LAN). The dashboard sync button posts to <code>/sync</code>.</p>
+      <div class="actions" style="margin-top: 0.75rem;">
+        <a class="button-link" href="sync.html">Sync History</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Add Vehicle</h2>
+      <form id="vehicle-form" class="form-grid">
+        <label>VIN <input name="vin" required maxlength="17" /></label>
+        <label>Plate <input name="plate" /></label>
+        <label>Make <input name="make" required /></label>
+        <label>Model <input name="model" required /></label>
+        <label>Year <input name="year" type="number" min="1900" max="2099" required /></label>
+        <label>Initial Mileage <input name="mileage" type="number" min="0" step="1" /></label>
+        <button type="submit" class="primary">Save Vehicle</button>
+      </form>
+      <div class="actions" style="margin-top: 0.5rem;">
+        <button type="button" id="scan-obd">Scan VIN & Mileage (OBD-II)</button>
+        <span id="scan-obd-status" class="muted" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Data Management</h2>
+      <div class="actions">
+        <button id="export-button">Export JSON</button>
+        <label class="file-input">Import JSON <input type="file" id="import-input" accept="application/json" /></label>
+      </div>
+      <p class="muted">Data is stored locally (localStorage) and remains cached offline.</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-meta">
+      <span id="status-text">Ready (offline-first)</span>
+      <span id="last-sync-text" class="muted"></span>
+    </div>
+  </footer>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
