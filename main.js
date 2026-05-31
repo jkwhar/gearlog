@@ -340,11 +340,35 @@ function collectMileageRecords(vehicle) {
 
 async function lookupVin(vin) {
   const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${encodeURIComponent(vin)}?format=json`;
-  const res = await fetch(url);
+  console.log("[VIN lookup] URL:", url);
+
+  let res;
+  try {
+    res = await fetch(url);
+  } catch (networkError) {
+    console.error("[VIN lookup] Network error:", networkError);
+    throw new Error("Network error — check connectivity");
+  }
+
+  console.log("[VIN lookup] HTTP status:", res.status);
   if (!res.ok) throw new Error(`NHTSA API returned ${res.status}`);
+
   const json = await res.json();
+  console.log("[VIN lookup] Raw response:", json);
+
   const r = json.Results?.[0];
   if (!r) throw new Error("No results returned");
+
+  console.log("[VIN lookup] Decoded fields:", {
+    ModelYear: r.ModelYear,
+    Make: r.Make,
+    Model: r.Model,
+    DisplacementL: r.DisplacementL,
+    EngineCylinders: r.EngineCylinders,
+    FuelTypePrimary: r.FuelTypePrimary,
+    ErrorCode: r.ErrorCode,
+    ErrorText: r.ErrorText,
+  });
 
   const displacementL = r.DisplacementL ? `${parseFloat(r.DisplacementL).toFixed(1)}L` : "";
   const cylinders = r.EngineCylinders ? `${r.EngineCylinders}-cyl` : "";
