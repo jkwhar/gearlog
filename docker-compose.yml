@@ -1,6 +1,6 @@
 services:
   carlog-api:
-    build: ./api
+    image: ghcr.io/jkwhar/gearlog:latest
     environment:
       - PORT=5000
       # Set AUTH_TOKEN to require a bearer token from the PWA (leave empty to disable).
