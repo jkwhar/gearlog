@@ -1,6 +1,14 @@
 const DATA_KEY = "carlog-data-v1";
 const SETTINGS_KEY = "carlog-settings-v1";
 
+function generateId() {
+  if (typeof crypto.randomUUID === "function") return generateId();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
 const data = loadData();
 const settings = loadSettings();
 
@@ -58,7 +66,7 @@ if (vehicleForm) {
     const formData = new FormData(vehicleForm);
     const createdAt = new Date().toISOString();
     const vehicle = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       vin: formData.get("vin").trim(),
       plate: formData.get("plate").trim(),
       make: formData.get("make").trim(),
@@ -74,7 +82,7 @@ if (vehicleForm) {
     const mileage = Number(formData.get("mileage"));
     if (!Number.isNaN(mileage) && mileage > 0) {
       vehicle.mileageHistory.push({
-        id: crypto.randomUUID(),
+        id: generateId(),
         value: mileage,
         source: "manual",
         recordedAt: createdAt,
@@ -125,7 +133,7 @@ if (serviceForm) {
     const formData = new FormData(serviceForm);
     const createdAt = new Date().toISOString();
     const service = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       vehicleId: formData.get("vehicleId"),
       date: formData.get("date"),
       mileage: Number(formData.get("mileage")),
@@ -150,7 +158,7 @@ if (serviceForm) {
     if (vehicle && hasMileage) {
       if (!Array.isArray(vehicle.mileageHistory)) vehicle.mileageHistory = [];
       vehicle.mileageHistory.push({
-        id: crypto.randomUUID(),
+        id: generateId(),
         value: service.mileage,
         source: "service",
         recordedAt: createdAt,
