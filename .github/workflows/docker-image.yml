@@ -18,10 +18,18 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build and push Docker image
+    - name: Build and push API image
       uses: docker/build-push-action@v5
       with:
         context: ./api
         file: ./api/Dockerfile
         push: true
         tags: ghcr.io/${{ github.repository }}:latest
+
+    - name: Build and push PWA image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./pwa/Dockerfile
+        push: true
+        tags: ghcr.io/${{ github.repository }}-pwa:latest

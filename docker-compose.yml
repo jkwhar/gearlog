@@ -10,3 +10,9 @@ services:
     ports:
       - "5000:5000"
     restart: unless-stopped
+
+  carlog-pwa:
+    image: ghcr.io/jkwhar/gearlog-pwa:latest
+    ports:
+      - "80:80"
+    restart: unless-stopped
