@@ -117,6 +117,19 @@ label {
   font-size: 0.95rem;
 }
 
+.input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-row input {
+  flex: 1;
+}
+
+.input-row button {
+  white-space: nowrap;
+}
+
 input,
 textarea,
 select,

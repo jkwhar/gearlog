@@ -15,6 +15,12 @@ const scanObdButton = document.getElementById("scan-obd");
 const scanObdStatus = document.getElementById("scan-obd-status");
 const vinInput = vehicleForm?.querySelector("input[name=vin]");
 const plateInput = vehicleForm?.querySelector("input[name=plate]");
+const makeInput = vehicleForm?.querySelector("input[name=make]");
+const modelInput = vehicleForm?.querySelector("input[name=model]");
+const yearInput = vehicleForm?.querySelector("input[name=year]");
+const engineInput = vehicleForm?.querySelector("input[name=engine]");
+const vinLookupButton = document.getElementById("vin-lookup");
+const vinLookupStatus = document.getElementById("vin-lookup-status");
 const mileageInput = vehicleForm?.querySelector("input[name=mileage]");
 const statusText = document.getElementById("status-text");
 const lastSyncText = document.getElementById("last-sync-text");
@@ -58,6 +64,7 @@ if (vehicleForm) {
       make: formData.get("make").trim(),
       model: formData.get("model").trim(),
       year: Number(formData.get("year")),
+      engine: formData.get("engine").trim(),
       mileageHistory: [],
       serviceRecords: [],
       createdAt,
@@ -78,6 +85,30 @@ if (vehicleForm) {
     persist();
     vehicleForm.reset();
     render();
+  });
+}
+
+if (vinLookupButton) {
+  vinLookupButton.addEventListener("click", async () => {
+    const vin = vinInput?.value.trim();
+    if (!vin || vin.length !== 17) {
+      setVinLookupStatus("Enter a 17-character VIN first.");
+      return;
+    }
+    setVinLookupStatus("Looking up…");
+    vinLookupButton.disabled = true;
+    try {
+      const info = await lookupVin(vin);
+      if (makeInput && info.make) makeInput.value = info.make;
+      if (modelInput && info.model) modelInput.value = info.model;
+      if (yearInput && info.year) yearInput.value = info.year;
+      if (engineInput && info.engine) engineInput.value = info.engine;
+      setVinLookupStatus("Done.");
+    } catch (error) {
+      setVinLookupStatus("Lookup failed: " + error.message);
+    } finally {
+      vinLookupButton.disabled = false;
+    }
   });
 }
 
@@ -146,6 +177,7 @@ if (vehicleList) {
     vehicleDialogBody.innerHTML = `
       <p><strong>VIN:</strong> ${vehicle.vin}</p>
       <p><strong>Plate:</strong> ${vehicle.plate || "—"}</p>
+      ${vehicle.engine ? `<p><strong>Engine:</strong> ${vehicle.engine}</p>` : ""}
       <p><strong>Total services:</strong> ${vehicleRecords.length}</p>
       <p><strong>Mileage entries:</strong> ${mileageRecords.length}</p>
       <div class="muted" style="margin-top: 0.5rem;">
@@ -256,6 +288,7 @@ function renderVehicleList() {
       return `
         <article class="vehicle-item" data-id="${vehicle.id}">
           <div><strong>${vehicle.make} ${vehicle.model}</strong> (${vehicle.year})</div>
+          ${vehicle.engine ? `<div class="muted">${vehicle.engine}</div>` : ""}
           <div class="muted">VIN: ${vehicle.vin}</div>
           <div class="muted">Plate: ${vehicle.plate || "—"}</div>
           <div class="muted">Latest mileage: ${latestMileage ?? "n/a"}</div>
@@ -303,6 +336,31 @@ function collectMileageRecords(vehicle) {
     if (b.timestamp === a.timestamp) return (b.value ?? 0) - (a.value ?? 0);
     return b.timestamp - a.timestamp;
   });
+}
+
+async function lookupVin(vin) {
+  const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${encodeURIComponent(vin)}?format=json`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`NHTSA API returned ${res.status}`);
+  const json = await res.json();
+  const r = json.Results?.[0];
+  if (!r) throw new Error("No results returned");
+
+  const displacementL = r.DisplacementL ? `${parseFloat(r.DisplacementL).toFixed(1)}L` : "";
+  const cylinders = r.EngineCylinders ? `${r.EngineCylinders}-cyl` : "";
+  const fuel = r.FuelTypePrimary || "";
+  const engine = [displacementL, cylinders, fuel].filter(Boolean).join(" ");
+
+  return {
+    year: r.ModelYear || "",
+    make: r.Make || "",
+    model: r.Model || "",
+    engine,
+  };
+}
+
+function setVinLookupStatus(message) {
+  if (vinLookupStatus) vinLookupStatus.textContent = message;
 }
 
 async function scanObdForVehicle() {

@@ -38,11 +38,18 @@
     <section class="card">
       <h2>Add Vehicle</h2>
       <form id="vehicle-form" class="form-grid">
-        <label>VIN <input name="vin" required maxlength="17" /></label>
+        <label>VIN
+          <div class="input-row">
+            <input name="vin" required maxlength="17" placeholder="17-character VIN" />
+            <button type="button" id="vin-lookup">Lookup</button>
+          </div>
+          <span id="vin-lookup-status" class="muted" aria-live="polite"></span>
+        </label>
         <label>Plate <input name="plate" /></label>
         <label>Make <input name="make" required /></label>
         <label>Model <input name="model" required /></label>
         <label>Year <input name="year" type="number" min="1900" max="2099" required /></label>
+        <label>Engine <input name="engine" placeholder="e.g. 3.5L 6-cyl Gasoline" /></label>
         <label>Initial Mileage <input name="mileage" type="number" min="0" step="1" /></label>
         <button type="submit" class="primary">Save Vehicle</button>
       </form>
