@@ -2,7 +2,7 @@ const DATA_KEY = "carlog-data-v1";
 const SETTINGS_KEY = "carlog-settings-v1";
 
 function generateId() {
-  if (typeof crypto.randomUUID === "function") return generateId();
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
