@@ -9,9 +9,10 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-COPY . .
 
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
+
+COPY . .
 
 # Prune dev artifacts (optional small cleanup)
 RUN npm cache clean --force
